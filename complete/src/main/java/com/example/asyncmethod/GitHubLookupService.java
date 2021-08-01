@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.CompletableFuture;
@@ -24,10 +25,16 @@ public class GitHubLookupService {
 	public CompletableFuture<User> findUser(String user) throws InterruptedException {
 		logger.info("Looking up " + user);
 		String url = String.format("https://api.github.com/users/%s", user);
-		User results = restTemplate.getForObject(url, User.class);
+		User result;
+		try {
+			result = restTemplate.getForObject(url, User.class);
+		} catch (HttpClientErrorException ex) {
+			result = new User();
+			result.setName("NOT_FOUND");
+		}
 		// Artificial delay of 1s for demonstration purposes
-		Thread.sleep(1000L);
-		return CompletableFuture.completedFuture(results);
+		Thread.sleep(500L);
+		return CompletableFuture.completedFuture(result);
 	}
 
 }
