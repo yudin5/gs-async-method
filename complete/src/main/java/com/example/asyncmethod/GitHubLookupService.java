@@ -33,7 +33,7 @@ public class GitHubLookupService {
 			result.setName("NOT_FOUND");
 		}
 		// Artificial delay of 1s for demonstration purposes
-		Thread.sleep(500L);
+		Thread.sleep(1000L);
 		return CompletableFuture.completedFuture(result);
 	}
 
